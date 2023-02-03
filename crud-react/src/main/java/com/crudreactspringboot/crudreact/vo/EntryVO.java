@@ -6,11 +6,13 @@ import java.time.LocalDate;
 import com.crudreactspringboot.crudreact.enumeration.EntryStatus;
 import com.crudreactspringboot.crudreact.enumeration.EntryType;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class EntryVO {
 	private Long id;
 	private String description;

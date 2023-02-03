@@ -38,6 +38,7 @@ public class UserService {
 		repository.deleteById(id);
 	}
 
+	@Transactional(readOnly = true)
 	public Optional<User> findById(Long id) {
 		return repository.findById(id);
 	}
