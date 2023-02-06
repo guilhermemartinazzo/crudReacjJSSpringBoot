@@ -6,10 +6,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +25,7 @@ import com.crudreactspringboot.crudreact.service.EntryService;
 import com.crudreactspringboot.crudreact.vo.EntryVO;
 
 @RestController
-@RequestMapping("/entry")
+@RequestMapping("/entries")
 public class EntryResource {
 
 	@Autowired
@@ -39,31 +42,53 @@ public class EntryResource {
 	}
 
 	@GetMapping("/filter")
-	public ResponseEntity<List<Entry>> findByUserIdAndType(@RequestParam(required = false) Long userId,
-			@RequestParam(required = false) EntryType type) {
-		return ResponseEntity.ok(service.findByUserIdAndType(userId, type));
-	}
-
-	@GetMapping("/filter2")
 	public ResponseEntity<List<Entry>> findByFilter(@RequestParam(required = false) Long id,
 			@RequestParam(required = false) EntryType type, @RequestParam(required = false) EntryStatus status,
 			@RequestParam(required = false) String description, @RequestParam(required = false) Integer entryYear,
 			@RequestParam(required = false) Integer entryMonth, @RequestParam(required = false) BigDecimal entryValue,
-			 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateRegistration, @RequestParam(required = false) Long userId) {
-		EntryVO entryVO = EntryVO.builder()
-				.id(id)
-				.description(description)
-				.entryMonth(entryMonth)
-				.entryYear(entryYear)
-				.entryValue(entryValue)
-				.user(userId)
-				.dateRegistration(dateRegistration)
-				.status(status).type(type).build();
+			@RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dateRegistration,
+			@RequestParam(required = false) Long userId) {
+		EntryVO entryVO = EntryVO.builder().id(id).description(description).entryMonth(entryMonth).entryYear(entryYear)
+				.entryValue(entryValue).user(userId).dateRegistration(dateRegistration).status(status).type(type)
+				.build();
 		return ResponseEntity.ok(service.findByFilter(entryVO));
 	}
 
 	@PostMapping
-	public ResponseEntity<Entry> creatEntry(@RequestBody EntryVO entry) {
-		return ResponseEntity.ok(service.createEntry(entry));
+	public ResponseEntity<Object> createEntry(@RequestBody EntryVO entry) {
+		try {
+			return ResponseEntity.status(HttpStatus.CREATED).body(service.createEntry(entry));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<Object> updateEntry(@PathVariable Long id, @RequestBody EntryVO entry) {
+		try {
+			return ResponseEntity.ok(service.updateEntry(id, entry));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PutMapping("/{id}/update-status")
+	public ResponseEntity<Object> updateEntry(@PathVariable Long id, @RequestParam EntryStatus status) {
+		try {
+			return ResponseEntity.ok(service.updateEntryStatus(id, status));
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> deleteEntry(@PathVariable Long id) {
+		try {
+			service.deleteById(id);
+			return ResponseEntity.noContent().build();
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 }

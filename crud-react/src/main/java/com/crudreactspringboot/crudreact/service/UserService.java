@@ -43,6 +43,10 @@ public class UserService {
 		return repository.findById(id);
 	}
 
+	public boolean existsById(Long id) {
+		return repository.existsById(id);
+	}
+
 	public User authenticate(String email, String password) {
 		Optional<User> userOpt = repository.findByEmail(email);
 		if (userOpt.isPresent()) {
@@ -59,4 +63,5 @@ public class UserService {
 			throw new BusinessException("Please user other email to create a user!");
 		}
 	}
+
 }

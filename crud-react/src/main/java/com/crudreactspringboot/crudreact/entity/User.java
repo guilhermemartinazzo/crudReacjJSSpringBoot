@@ -2,10 +2,12 @@ package com.crudreactspringboot.crudreact.entity;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -21,7 +23,8 @@ import lombok.NoArgsConstructor;
  *
  */
 @Data
-@Entity(name = "user_table")
+@Entity
+@Table(name="user_table", schema = "finances")
 @NoArgsConstructor
 public class User {
 
@@ -37,6 +40,7 @@ public class User {
 	private String password;
 
 	@CreationTimestamp
+	@Column(updatable = false)
 	private LocalDate dateRegistration;
 
 	public User(Long id) {

@@ -3,6 +3,7 @@ package com.crudreactspringboot.crudreact.entity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -26,7 +28,8 @@ import lombok.Data;
  *
  */
 @Data
-@Entity(name = "entry")
+@Entity
+@Table(name = "entry", schema = "finances")
 public class Entry {
 
 	@Id
@@ -52,5 +55,6 @@ public class Entry {
 	private EntryType type;
 
 	@CreationTimestamp
+	@Column(updatable = false)
 	private LocalDate dateRegistration;
 }
